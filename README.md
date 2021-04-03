@@ -8,35 +8,42 @@ Workflow to construct to preprocess PubMed XML files and save tibble datasets.
 - Singularity: 3.5.3
 
 # Summary
-XXXX
+![](https://raw.githubusercontent.com/rikenbit/pubmed-workflow/main/plot/summary.png)
 
 # How to reproduce this workflow
 ## 1. Configuration
-- **config.yaml**: XXXXXXXX
-
+- **config.yaml**:
+	- *METADATA_VERSION*: Update like v001 -> v002 -> ...and so on.
+	- *BIOC_VERSION*: Set next version of Bioconductor
 
 ## 2. Perform snakemake command
-The workflow consists of seven snakemake workflows.
+The workflow consists of four snakemake workflows.
 
 In local machine:
+
 ```bash
 snakemake -s workflow/download.smk -j 4 --use-singularity
 snakemake -s workflow/preprocess.smk -j 4 --use-singularity
 snakemake -s workflow/metadata.smk -j 4 --use-singularity
+snakemake -s workflow/plot.smk -j 4 --use-singularity
 ```
 
 In parallel environment (GridEngine):
+
 ```bash
 snakemake -s workflow/download.smk -j 4 --cluster "qsub -l nc=4 -p -50 -r yes -q node.q" --latency-wait 600 --use-singularity
 snakemake -s workflow/preprocess.smk -j 4 --cluster "qsub -l nc=4 -p -50 -r yes -q node.q" --latency-wait 600 --use-singularity
 snakemake -s workflow/metadata.smk -j 4 --cluster "qsub -l nc=4 -p -50 -r yes -q node.q" --latency-wait 600 --use-singularity
+snakemake -s workflow/plot.smk -j 4 --cluster "qsub -l nc=4 -p -50 -r yes -q node.q" --latency-wait 600 --use-singularity
 ```
 
 In parallel environment (Slurm):
+
 ```bash
 snakemake -s workflow/download.smk -j 4 --cluster "sbatch -n 4 --nice=50 --requeue -p node03-06" --latency-wait 600 --use-singularity
 snakemake -s workflow/preprocess.smk -j 4 --cluster "sbatch -n 4 --nice=50 --requeue -p node03-06" --latency-wait 600 --use-singularity
 snakemake -s workflow/metadata.smk -j 4 --cluster "sbatch -n 4 --nice=50 --requeue -p node03-06" --latency-wait 600 --use-singularity
+snakemake -s workflow/plot.smk -j 4 --cluster "sbatch -n 4 --nice=50 --requeue -p node03-06" --latency-wait 600 --use-singularity
 ```
 
 # License
