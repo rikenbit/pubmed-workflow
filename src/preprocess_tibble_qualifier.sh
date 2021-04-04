@@ -12,4 +12,4 @@ SLURM_RESTART_COUNT=2
 
 export LC_ALL=C
 
-Rscript src/preprocess_tibble_qualifier.R $@
+Rscript src/preprocess_tibble_qualifier.R

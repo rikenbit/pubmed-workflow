@@ -7,7 +7,7 @@ configfile: "config.yaml"
 
 METADATA_VERSION = config['METADATA_VERSION']
 BIOC_VERSION = config['BIOC_VERSION']
-TIBBLE, = glob_wildcards('tibble/{tibble}.RData')
+TIBBLE, = glob_wildcards('tibble/{tibble}_tbl.RData')
 
 rule all:
 	input:
@@ -19,7 +19,7 @@ rule all:
 
 rule metadata_csv:
 	input:
-		expand('tibble/{tibble}.RData', tibble=TIBBLE)
+		expand('tibble/{tibble}_tbl.RData', tibble=TIBBLE)
 	output:
 		'AHPubMedDbs/inst/extdata/metadata_{METADATA_VERSION}.csv'
 	container:

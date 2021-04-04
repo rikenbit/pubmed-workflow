@@ -7,12 +7,10 @@ min_version("6.0.5")
 TYPES = ['pubmed', 'pmc', 'descriptor', 'qualifier', 'scr']
 MEDLINES, = glob_wildcards('data/pubmed/zip/zip/{m}.xml')
 
-# MEDLINES = ['medline16n0477', 'medline16n0471', 'medline16n0470']
-
 rule all:
 	input:
-		# expand('data/pubmed/{t}.txt', t=TYPES)
-		expand('tibble/{t}.RData', t=TYPES)
+		expand('tibble/{t}_tbl.RData', t=TYPES),
+		expand('datatable/{t}_dt.RData', t=TYPES)
 
 #############################################
 # Preprocess
@@ -46,11 +44,25 @@ rule preprocess_merge_sort_unique:
 	shell:
 		'(cat {input} | sort | uniq > {output}) >& {log}'
 
-rule preprocess_tibble:
+rule preprocess_sqlite:
 	input:
 		'data/pubmed/{t}.txt'
 	output:
-		'tibble/{t}.RData'
+		'sqlite/{t}.sqlite'
+	container:
+		'docker://logiqx/python-lxml:3.8-slim-buster'
+	benchmark:
+		'benchmarks/preprocess_sqlite_{t}.txt'
+	log:
+		'logs/preprocess_sqlite_{t}.txt'
+	shell:
+		'src/preprocess_sqlite_{wildcards.t}.sh {input} {output} >& {log}'
+
+rule preprocess_tibble:
+	input:
+		'sqlite/{t}.sqlite'
+	output:
+		'tibble/{t}_tbl.RData'
 	container:
 		'docker://rocker/tidyverse:4.0.4'
 	benchmark:
@@ -59,3 +71,18 @@ rule preprocess_tibble:
 		'logs/preprocess_tibble_{t}.txt'
 	shell:
 		'src/preprocess_tibble_{wildcards.t}.sh {input} {output} >& {log}'
+
+
+rule preprocess_datatable:
+	input:
+		'sqlite/{t}.sqlite'
+	output:
+		'datatable/{t}_dt.RData'
+	container:
+		'docker://rocker/tidyverse:4.0.4'
+	benchmark:
+		'benchmarks/preprocess_datatable_{t}.txt'
+	log:
+		'logs/preprocess_datatable_{t}.txt'
+	shell:
+		'src/preprocess_datatable_{wildcards.t}.sh {input} {output} >& {log}'

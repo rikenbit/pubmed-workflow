@@ -1,3 +1,4 @@
+AHPubMedDbs
 *.html
 .aws
 .snakemake*
@@ -10,6 +11,8 @@ benchmarks
 logs
 data
 sqlite
+tibble
+datatable
 report
 rpackages
 .texlive2019

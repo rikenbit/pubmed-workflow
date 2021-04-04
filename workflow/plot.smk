@@ -4,7 +4,7 @@ from snakemake.utils import min_version
 min_version("6.0.5")
 configfile: "config.yaml"
 
-TIBBLE, = glob_wildcards('tibble/{t}.RData')
+TIBBLE, = glob_wildcards('tibble/{t}_tbl.RData')
 
 rule all:
 	input:
@@ -16,7 +16,7 @@ rule all:
 
 rule plot:
 	input:
-		expand('tibble/{t}.RData', t=TIBBLE)
+		expand('tibble/{t}_tbl.RData', t=TIBBLE)
 	output:
 		'plot/summary.png'
 	# container:

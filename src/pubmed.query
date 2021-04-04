@@ -1,0 +1,26 @@
+/* TABLE */
+DROP TABLE IF EXISTS PUBMED;
+CREATE TABLE PUBMED(
+PMID int,
+JOURNAL varchar(100),
+YEAR int,
+TITLE varchar(300),
+ABSTRACT  varchar(2000)
+);
+
+/* IMPORT */
+.separator "|||"
+.import data/pubmed/pubmed.txt PUBMED
+
+/* INDEXING */
+
+
+
+/* OUTPUT */
+.output sqlite/pubmed.sqlite
+SELECT * FROM PUBMED;
+.exit
+
+
+
+

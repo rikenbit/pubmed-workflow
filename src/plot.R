@@ -1,7 +1,7 @@
 library("ggplot2")
 
 types <- c("pubmed", "pmc", "descriptor", "qualifier", "scr")
-tibbledata <- paste0("tibble/", types, ".RData")
+tibbledata <- paste0("tibble/", types, "_tbl.RData")
 for(i in seq(tibbledata)){
 	load(tibbledata[i])
 }
@@ -13,7 +13,7 @@ gdata$Name <- factor(types, level=types)
 
 # Plot
 g <- ggplot(gdata, aes(x = Name, y = Value, fill = Name)) +
-    geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + xlab("Types") + ylab("# count") + theme(plot.margin= unit(c(1, 1, -1, 1), "lines"))
+    geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + xlab("Types") + ylab("# counts") + theme(plot.margin= unit(c(1, 1, -1, 1), "lines"))
 
 ggsave(file='plot/summary.png', plot=g,
-	dpi=500, width=20.0, height=7.0)
+	dpi=500, width=10.0, height=10.0)

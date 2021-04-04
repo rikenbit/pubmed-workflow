@@ -1,19 +1,8 @@
-library("data.table")
 library("tidyverse")
 
-# Setting
-input = commandArgs(trailingOnly=TRUE)[1]
-output = commandArgs(trailingOnly=TRUE)[2]
-
-# input = "data/pubmed/pmc_medline16n0392.txt"
-
-# Load
-pmc <- fread(input, stringsAsFactors=FALSE, header=FALSE)
-target <- apply(pmc, 2, function(x){
-	all(!is.na(x))
-})
-pmc <- as_tibble(pmc[, ..target])
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "sqlite/pmc.sqlite")
+db <- dplyr::tbl(con, "pmc")
+pmc <- tibble::as_tibble(db)
 
 # Save
-colnames(pmc) <- c("PMID", "PMCID")
-save(pmc, file=output)
+save(pmc, file="tibble/pmc_tbl.RData")

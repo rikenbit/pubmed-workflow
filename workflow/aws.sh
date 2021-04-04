@@ -8,7 +8,9 @@
 # Default output format [text]:
 
 # cp
+docker run -v ~/.aws:/root/.aws --rm -it amazon/aws-cli:2.1.32 --profile koki_tsuyuzaki s3 cp sqlite s3://annotationhub/AHPubMedDbs/v001 --recursive
 docker run -v ~/.aws:/root/.aws --rm -it amazon/aws-cli:2.1.32 --profile koki_tsuyuzaki s3 cp tibble s3://annotationhub/AHPubMedDbs/v001 --recursive
+docker run -v ~/.aws:/root/.aws --rm -it amazon/aws-cli:2.1.32 --profile koki_tsuyuzaki s3 cp datatable s3://annotationhub/AHPubMedDbs/v001 --recursive
 
 # ls
 docker run -v ~/.aws:/root/.aws --rm -it amazon/aws-cli:2.1.32 --profile koki_tsuyuzaki s3 ls s3://annotationhub/AHPubMedDbs/v001 --recursive
