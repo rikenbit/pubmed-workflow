@@ -13,7 +13,7 @@ gdata$Name <- factor(types, level=types)
 
 # Plot
 g <- ggplot(gdata, aes(x = Name, y = Value, fill = Name)) +
-    geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + xlab("Types") + ylab("# counts") + theme(plot.margin= unit(c(1, 1, -1, 1), "lines"))
+    geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + xlab("Types") + ylab("# counts") + theme(plot.margin= unit(c(1, 1, -1, 1), "lines")) + theme(legend.position = 'none')
 
 ggsave(file='plot/summary.png', plot=g,
-	dpi=500, width=10.0, height=10.0)
+	dpi=500, width=20.0, height=10.0)
