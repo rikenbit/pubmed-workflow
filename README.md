@@ -1,6 +1,6 @@
 # pubmed-workflow
 
-Workflow to construct to preprocess PubMed XML files and save tibble datasets.
+Workflow to construct to preprocess PubMed XML files and save sqlite, tibble, and data.table datasets.
 
 # Pre-requisites
 - Bash: GNU bash, version 4.2.46(1)-release (x86_64-redhat-linux-gnu)

@@ -4,7 +4,7 @@ from snakemake.utils import min_version
 
 min_version("6.0.5")
 
-TYPES = ['pubmed', 'pmc', 'descriptor', 'qualifier', 'scr']
+TYPES = ['pubmed', 'abstract', 'author', 'pmc', 'descriptor', 'qualifier', 'scr']
 MEDLINES, = glob_wildcards('data/pubmed/zip/zip/{m}.xml')
 
 rule all:
@@ -18,17 +18,22 @@ rule all:
 
 rule preprocess_pubmed_parsexml:
 	input:
-		'data/pubmed/zip/zip/{m}.xml'
+		in1='data/pubmed/zip/zip/{m}.xml',
+		in2='data/GlobalAirportDatabase/GlobalAirportDatabase.txt',
+		in3='data/h2706world_utf8.csv'
 	output:
-		expand('data/pubmed/{t}_{{m}}.txt', t=TYPES, m=MEDLINES)
+		'data/pubmed/{t}_{m}.txt'
+	wildcard_constraints:
+			t='|'.join([re.escape(x) for x in TYPES]),
+			m='|'.join([re.escape(x) for x in MEDLINES])
 	container:
-		'docker://logiqx/python-lxml:3.8-slim-buster'
+		'docker://koki/assigncoordinate:20210413'
 	benchmark:
-		'benchmarks/preprocess_pubmed_parsexml_{m}.txt'
+		'benchmarks/preprocess_pubmed_parsexml_{t}_{m}.txt'
 	log:
-		'logs/preprocess_pubmed_parsexml_{m}.log'
+		'logs/preprocess_pubmed_parsexml_{t}_{m}.log'
 	shell:
-		'src/preprocess_pubmed_parsexml.sh {input} >& {log}'
+		'src/preprocess_pubmed_parsexml_{wildcards.t}.sh {input.in1} {output} >& {log}'
 
 rule preprocess_merge_sort_unique:
 	input:
@@ -71,7 +76,6 @@ rule preprocess_tibble:
 		'logs/preprocess_tibble_{t}.txt'
 	shell:
 		'src/preprocess_tibble_{wildcards.t}.sh {input} {output} >& {log}'
-
 
 rule preprocess_datatable:
 	input:

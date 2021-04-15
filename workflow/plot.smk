@@ -19,8 +19,6 @@ rule plot:
 		expand('tibble/{t}_tbl.RData', t=TIBBLE)
 	output:
 		'plot/summary.png'
-	# container:
-	# 	"docker://koki/biocdev:latest"
 	container:
 		'docker://rocker/tidyverse:4.0.4'
 	benchmark:

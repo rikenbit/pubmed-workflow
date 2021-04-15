@@ -12,4 +12,4 @@ SLURM_RESTART_COUNT=2
 
 export LC_ALL=C
 
-python src/preprocess_pubmed_parsexml.py $1
+Rscript src/preprocess_datatable_abstract.R
