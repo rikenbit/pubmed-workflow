@@ -19,21 +19,36 @@ PMCID = ""
 
 # parse XML
 for event, node in doc:
-  if event == START_ELEMENT and node.localName == "MedlineCitation":
+  if event == START_ELEMENT and node.localName == "PubmedArticle":
+  #if event == START_ELEMENT and node.localName == "MedlineCitation":
     try:
       # Initialize
       PMID = ""
       PMCID = ""
       doc.expandNode(node)
       # PMID
-      for t in node.childNodes:
-        if t.localName == 'PMID':
-          PMID="".join(tt.nodeValue for tt in t.childNodes if tt.nodeType == tt.TEXT_NODE)
+      mcl = node.getElementsByTagName('PMID')
+      #for t in mcl.childNodes:
+      for t in mcl:
+          if t.localName == 'PMID':
+            PMID="".join(tt.nodeValue for tt in t.childNodes if tt.nodeType == tt.TEXT_NODE)
       # remove duplicate
       PMID = PMID.replace("|||","")
       PMID = PMID.replace("\n","")
       # PMCID
       mhl = node.getElementsByTagName('OtherID')
+      for mh in mhl:
+        tmp = "".join(t.nodeValue for t in mh.childNodes if t.nodeType == t.TEXT_NODE)
+        Match_PMC = re.search("^PMC\\d*", tmp)
+        if Match_PMC != None:
+          PMCID = Match_PMC.group()
+          # Output
+          out.write(PMID)
+          out.write("|||")
+          out.write(PMCID)
+          out.write("\n")
+      # PMCID ArticleId
+      mhl = node.getElementsByTagName('ArticleId')
       for mh in mhl:
         tmp = "".join(t.nodeValue for t in mh.childNodes if t.nodeType == t.TEXT_NODE)
         Match_PMC = re.search("^PMC\\d*", tmp)

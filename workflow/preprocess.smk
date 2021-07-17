@@ -1,31 +1,31 @@
-import pandas as pd
 import glob
 from snakemake.utils import min_version
 
 min_version("6.0.5")
 
 TYPES = ['pubmed', 'abstract', 'author', 'pmc', 'descriptor', 'qualifier', 'scr']
-MEDLINES, = glob_wildcards('data/pubmed/zip/zip/{m}.xml')
+MEDLINES, = glob_wildcards('data/pubmed/baseline/{m}.xml')
 
 rule all:
 	input:
-		expand('tibble/{t}_tbl.RData', t=TYPES),
-		expand('datatable/{t}_dt.RData', t=TYPES)
+		expand('tibble/{typ}_tbl.RData',typ=TYPES),
+		expand('datatable/{typ}_dt.RData', typ=TYPES)
+
 
 #############################################
 # Preprocess
 #############################################
 
+def createfilelist(wildcards):
+    if '_' in wildcards.t:
+        return wildcards.t
+    return ['data/pubmed/'+wildcards.t+'_{fn}.txt'.format(fn=fn) for fn in MEDLINES]
+
 rule preprocess_pubmed_parsexml:
 	input:
-		in1='data/pubmed/zip/zip/{m}.xml',
-		in2='data/GlobalAirportDatabase/GlobalAirportDatabase.txt',
-		in3='data/h2706world_utf8.csv'
+                'data/pubmed/baseline/{m}.xml'
 	output:
-		'data/pubmed/{t}_{m}.txt'
-	wildcard_constraints:
-			t='|'.join([re.escape(x) for x in TYPES]),
-			m='|'.join([re.escape(x) for x in MEDLINES])
+		"data/pubmed/{t}_{m}.txt"
 	container:
 		'docker://koki/assigncoordinate:20210413'
 	benchmark:
@@ -33,11 +33,11 @@ rule preprocess_pubmed_parsexml:
 	log:
 		'logs/preprocess_pubmed_parsexml_{t}_{m}.log'
 	shell:
-		'src/preprocess_pubmed_parsexml_{wildcards.t}.sh {input.in1} {output} >& {log}'
+		'src/preprocess_pubmed_parsexml_{wildcards.t}.sh {input} {output} >& {log}'
 
 rule preprocess_merge_sort_unique:
 	input:
-		expand('data/pubmed/{{t}}_{m}.txt', t=TYPES, m=MEDLINES)
+                createfilelist
 	output:
 		'data/pubmed/{t}.txt'
 	container:
@@ -47,7 +47,8 @@ rule preprocess_merge_sort_unique:
 	log:
 		'logs/preprocess_merge_sort_unique_{t}.txt'
 	shell:
-		'(cat {input} | sort | uniq > {output}) >& {log}'
+		'(ls data/pubmed/{wildcards.t}_*.txt | xargs cat | sort | uniq > {output}) >& {log}'
+		#'(cat {input} | sort | uniq > {output}) >& {log}'
 
 rule preprocess_sqlite:
 	input:
@@ -62,6 +63,8 @@ rule preprocess_sqlite:
 		'logs/preprocess_sqlite_{t}.txt'
 	shell:
 		'src/preprocess_sqlite_{wildcards.t}.sh {input} {output} >& {log}'
+
+
 
 rule preprocess_tibble:
 	input:
