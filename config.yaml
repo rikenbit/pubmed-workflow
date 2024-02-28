@@ -1,5 +1,5 @@
 # METADATA Version (Should be bumped in each BioC update)
-METADATA_VERSION: v006
+METADATA_VERSION: v007
 
 # Bioconductor Version (for next coming)
-BIOC_VERSION: 3.18
+BIOC_VERSION: 3.19
