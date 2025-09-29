@@ -12,7 +12,7 @@ SLURM_RESTART_COUNT=2
 
 export LC_ALL=C
 
-wget http://www.partow.net/downloads/GlobalAirportDatabase.zip -P data
+wget https://www.partow.net/downloads/GlobalAirportDatabase.zip -P data
 cd data
 mkdir GlobalAirportDatabase
 cd GlobalAirportDatabase
